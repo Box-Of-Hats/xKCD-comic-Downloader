@@ -98,12 +98,15 @@ def main():
     print('\n')
     if comic_counter > 0:
         print('Finished downloading comics.')
-        print('{} comics downloaded.'.format(comic_counter))
-        subprocess.call(['explorer', folder_to_save_to])
+        print('{} comics downloaded.\n'.format(comic_counter))
+        input('(Press return to open most recent)')
+        #Open the most recently downloaded comic:
+        os.system("start " + '{}\\{}.png'.format(folder_to_save_to, 
+                                                 download_client.current_highest()))
     else:
         print('Comic collection is already up-to-date.')
-        print('No comics downloaded.')
-        input()
+        print('No comics downloaded.\n')
+        input('(Press return to exit)')
 
 
 if __name__ == '__main__':
