@@ -19,12 +19,16 @@ import win32api
 global dlSession
 import subprocess
 import os
+
+import tkinter
 dlSession = 0
 errors = 0
 
 
 def findHighestComic():
-
+	"""
+	Returns the highest numbered comic that is availanle in the 'comics\' directory.
+	"""
 
 	directory = "comics"
 	#Creates a 'comics' folder if non-existant
@@ -58,7 +62,6 @@ def findHighestComic():
 	except:
 		return(0)
 
-
 def downloadComics(downloadFromNo):
 	global dlSession
 	global errors
@@ -86,17 +89,27 @@ def downloadComics(downloadFromNo):
 			urllib.request.urlretrieve(comicURL, fileName)
 			comicNo += 1
 			dlSession += 1
+			errors = 0
 
 		except:
 			errors += 1
 
 			#The number of attemps that will be made to downlaod an image:
-			if errors >= 15:
+			if errors >= 3:
 
 				if dlSession ==0:
 					win32api.MessageBox(0, 'No comics were downloaded. \nLibrary is already up-to-date.', 'xKCD Comic Downloader')
 				elif dlSession >= 1:
 					win32api.MessageBox(0, str(dlSession) + ' comics were downloaded.', 'xKCD Comic Downloader')
+					toOpen = findHighestComic()
+
+					fileName = "comics/xkcd_" + str(toOpen) + ".jpg"
+
+					try:
+						openImage(fileName)
+					except:
+						os.system("open "+ fileName)
+
 				else:
 					win32api.MessageBox(0, 'An issue occurred with the xKCD site.', 'xKCD Comic Downloader')
 				comicNo = -1
@@ -109,13 +122,8 @@ def downloadComics(downloadFromNo):
 def openFolder(path):
 	subprocess.check_call(['explorer', path])
 
-
-
 def openImage(filename):
 	os.system("start "+ filename)
-
-
-
 
 def main():
 	#Main:
@@ -123,15 +131,5 @@ def main():
 	downloadComics( mostRecentComicDownloaded )
 	#openFolder("C:\py\Python_+_Web\download_all_xkcd")
 
-	toOpen = findHighestComic()
-
-	fileName = "comics/xkcd_" + str(toOpen) + ".jpg"
-
-	try:
-		openImage(fileName)
-	except:
-		os.system("open "+ fileName)
-
 if __name__ == "__main__":
     main() 
-
