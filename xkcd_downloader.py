@@ -71,12 +71,12 @@ class ComicDownloader():
         else:
             return 0
 
-    def download_range(self, lower, upper, delay=0.05):
+    def download_range(self, lower, upper, delay=0.05, max_errors=3):
         """Download x comics in a given number range, inclusive"""
         errors = 0
         downloaded_comics_counter = 0
         for comic_count in range(lower, upper+1):
-            if errors > 3:
+            if errors >= max_errors:
                 break
             if not self.download_comic(comic_count):
                 errors += 1
@@ -93,7 +93,9 @@ def main():
     """
     folder_to_save_to = 'comics'
     download_client = ComicDownloader(folder_to_save_to)
-    comic_counter = download_client.download_range(download_client.current_highest()+1, 100000, 0)
+    comic_counter = download_client.download_range(download_client.current_highest()+1, 100000,
+                                                   delay=0, max_errors=3)
+
     print('_'*70)
     print('\n')
     if comic_counter > 0:
